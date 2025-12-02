@@ -1,1 +1,1 @@
-# finance-control
+# personal-finance-manager
