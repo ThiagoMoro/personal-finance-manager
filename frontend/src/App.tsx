@@ -33,6 +33,7 @@ function App() {
     category: '' 
   });
 
+  // Carregar dados iniciais
   useEffect(() => {
     loadAllData();
   }, []);
@@ -49,10 +50,11 @@ function App() {
         recurringAPI.getAll(),
       ]);
 
-      setBanks(banksRes.data);
-      setIncomes(incomesRes.data);
-      setExpenses(expensesRes.data);
-      setRecurring(recurringRes.data);
+      // ✅ CORREÇÃO: usar .data.data porque o backend devolve { data: [...] }
+      setBanks(Array.isArray(banksRes.data.data) ? banksRes.data.data : []);
+      setIncomes(Array.isArray(incomesRes.data.data) ? incomesRes.data.data : []);
+      setExpenses(Array.isArray(expensesRes.data.data) ? expensesRes.data.data : []);
+      setRecurring(Array.isArray(recurringRes.data.data) ? recurringRes.data.data : []);
     } catch (err) {
       setError('Failed to load data. Please check if the server is running.');
       console.error('Error loading data:', err);
@@ -61,6 +63,7 @@ function App() {
     }
   };
 
+  // Banks
   const addBank = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newBank.name && newBank.balance) {
@@ -69,7 +72,9 @@ function App() {
           name: newBank.name,
           balance: parseFloat(newBank.balance),
         });
-        setBanks([...banks, response.data]);
+        // ✅ CORREÇÃO: response.data já é o objeto criado
+        const createdBank = response.data.data || response.data;
+        setBanks([...banks, createdBank]);
         setNewBank({ name: '', balance: '' });
       } catch (err) {
         console.error('Error creating bank:', err);
@@ -88,6 +93,7 @@ function App() {
     }
   };
 
+  // Incomes
   const addIncome = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newIncome.description && newIncome.amount && newIncome.date && newIncome.bank) {
@@ -100,8 +106,10 @@ function App() {
           bank: newIncome.bank,
         });
         
-        setIncomes([...incomes, response.data]);
+        const createdIncome = response.data.data || response.data;
+        setIncomes([...incomes, createdIncome]);
         
+        // Atualizar saldo do banco localmente
         setBanks(banks.map(b => 
           b.name === newIncome.bank 
             ? { ...b, balance: b.balance + parseFloat(newIncome.amount) } 
@@ -120,14 +128,16 @@ function App() {
     try {
       await incomesAPI.delete(id);
       setIncomes(incomes.filter(i => i.id !== id));
+      // Recarregar bancos para atualizar saldo
       const banksRes = await banksAPI.getAll();
-      setBanks(banksRes.data);
+      setBanks(Array.isArray(banksRes.data.data) ? banksRes.data.data : []);
     } catch (err) {
       console.error('Error deleting income:', err);
       alert('Failed to delete income');
     }
   };
 
+  // Expenses
   const addExpense = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newExpense.description && newExpense.amount && newExpense.date && newExpense.bank) {
@@ -140,8 +150,10 @@ function App() {
           bank: newExpense.bank,
         });
         
-        setExpenses([...expenses, response.data]);
+        const createdExpense = response.data.data || response.data;
+        setExpenses([...expenses, createdExpense]);
         
+        // Atualizar saldo do banco localmente
         setBanks(banks.map(b => 
           b.name === newExpense.bank 
             ? { ...b, balance: b.balance - parseFloat(newExpense.amount) } 
@@ -160,14 +172,16 @@ function App() {
     try {
       await expensesAPI.delete(id);
       setExpenses(expenses.filter(d => d.id !== id));
+      // Recarregar bancos para atualizar saldo
       const banksRes = await banksAPI.getAll();
-      setBanks(banksRes.data);
+      setBanks(Array.isArray(banksRes.data.data) ? banksRes.data.data : []);
     } catch (err) {
       console.error('Error deleting expense:', err);
       alert('Failed to delete expense');
     }
   };
 
+  // Recurring Payments
   const addRecurring = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newRecurring.description && newRecurring.amount && newRecurring.type && newRecurring.dayOfMonth) {
@@ -180,7 +194,8 @@ function App() {
           category: newRecurring.category,
         });
         
-        setRecurring([...recurring, response.data]);
+        const createdRecurring = response.data.data || response.data;
+        setRecurring([...recurring, createdRecurring]);
         setNewRecurring({ description: '', amount: '', type: '', dayOfMonth: '', category: '' });
       } catch (err) {
         console.error('Error creating recurring payment:', err);
