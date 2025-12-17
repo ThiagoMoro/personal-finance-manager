@@ -5,8 +5,27 @@ interface IncomeListProps {
   onRemove: (id: number) => void;
 }
 
+const INCOME_CATEGORY_LABELS: Record<string, string> = {
+  'salary': '💼 Salary',
+  'bonus': '🎉 Bonus',
+  'freelance': '💻 Freelance',
+  'commission': '💰 Commission',
+  'investments': '📈 Investments',
+  'interest': '🏦 Interest',
+  'rental': '🏠 Rental Income',
+  'gifts': '🎁 Gifts',
+  'refunds': '↩️ Refunds',
+  'side-hustle': '🚀 Side Hustle',
+  'other': '📦 Other Income',
+};
+
 export default function IncomeList({ incomes, onRemove }: IncomeListProps) {
   const totalIncome = incomes.reduce((acc, i) => acc + i.amount, 0);
+
+  const getCategoryLabel = (category?: string) => {
+    if (!category) return '📦 Other';
+    return INCOME_CATEGORY_LABELS[category] || category;
+  };
 
   return (
     <div className="card p-6 card-animate animate-fade-in">
@@ -48,11 +67,9 @@ export default function IncomeList({ incomes, onRemove }: IncomeListProps) {
                       <i className="fas fa-calendar mr-1" />
                       {new Date(income.date).toLocaleDateString('en-GB')}
                     </span>
-                    {income.category && (
-                      <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">
-                        {income.category}
-                      </span>
-                    )}
+                    <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">
+                      {getCategoryLabel(income.category)}
+                    </span>
                     <span className="text-xs text-slate-500">
                       <i className="fas fa-building-columns mr-1" />
                       {income.bank}

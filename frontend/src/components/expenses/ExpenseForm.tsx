@@ -7,6 +7,44 @@ interface ExpenseFormProps {
   onSubmit: (e: React.FormEvent) => void;
 }
 
+const EXPENSE_CATEGORIES = [
+  { value: 'home', label: '🏠 Home' },
+  { value: 'utilities', label: '💡 Utilities' },
+  { value: 'phone', label: '📱 Phone' },
+  { value: 'insurance', label: '🛡️ Insurance' },
+  { value: 'food', label: '🍔 Food & Groceries' },
+  { value: 'restaurants', label: '🍽️ Restaurants' },
+  { value: 'delivery', label: '🛵 Delivery' },
+  { value: 'snacks', label: '🍿 Snacks & Drinks' },
+  { value: 'transport', label: '🚗 Transport' },
+  { value: 'fuel', label: '⛽ Fuel' },
+  { value: 'car', label: '🔧 Car Maintenance' },
+  { value: 'parking', label: '🅿️ Parking & Tolls' },
+  { value: 'taxi', label: '🚕 Taxi & Uber' },
+  { value: 'healthcare', label: '🏥 Healthcare' },
+  { value: 'gym', label: '💪 Gym & Sports' },
+  { value: 'beauty', label: '💅 Beauty & Personal Care' },
+  { value: 'education', label: '🎓 Education' },
+  { value: 'books', label: '📚 Books & Magazines' },
+  { value: 'courses', label: '💻 Online Courses' },
+  { value: 'entertainment', label: '🎬 Entertainment' },
+  { value: 'subscriptions', label: '📺 Subscriptions' },
+  { value: 'hobbies', label: '🎨 Hobbies' },
+  { value: 'games', label: '🎮 Games' },
+  { value: 'travel', label: '✈️ Travel & Holidays' },
+  { value: 'shopping', label: '👕 Shopping' },
+  { value: 'electronics', label: '📱 Electronics' },
+  { value: 'gifts', label: '🎁 Gifts' },
+  { value: 'children', label: '👶 Children' },
+  { value: 'pets', label: '🐾 Pets' },
+  { value: 'work', label: '💼 Work Expenses' },
+  { value: 'office', label: '📎 Office Supplies' },
+  { value: 'taxes', label: '🧾 Taxes' },
+  { value: 'fees', label: '🏦 Bank Fees' },
+  { value: 'donations', label: '❤️ Donations' },
+  { value: 'other', label: '📦 Other' },
+];
+
 export default function ExpenseForm({ newExpense, setNewExpense, banks, onSubmit }: ExpenseFormProps) {
   return (
     <div className="card p-6 card-animate animate-fade-in">
@@ -24,7 +62,7 @@ export default function ExpenseForm({ newExpense, setNewExpense, banks, onSubmit
             value={newExpense.description}
             onChange={(e) => setNewExpense({ ...newExpense, description: e.target.value })}
             className="input"
-            placeholder="e.g. Rent, Groceries, Transport"
+            placeholder="e.g. Supermarket, Restaurant, Fuel"
             required
           />
         </div>
@@ -57,13 +95,19 @@ export default function ExpenseForm({ newExpense, setNewExpense, banks, onSubmit
         </div>
         <div>
           <label className="label">Category</label>
-          <input
-            type="text"
+          <select
             value={newExpense.category}
             onChange={(e) => setNewExpense({ ...newExpense, category: e.target.value })}
-            className="input"
-            placeholder="e.g. Housing, Food, Transport"
-          />
+            className="select"
+            required
+          >
+            <option value="">Select a category</option>
+            {EXPENSE_CATEGORIES.map((cat) => (
+              <option key={cat.value} value={cat.value}>
+                {cat.label}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label className="label">Bank</label>
@@ -81,8 +125,8 @@ export default function ExpenseForm({ newExpense, setNewExpense, banks, onSubmit
             ))}
           </select>
         </div>
-        <button type="submit" className="btn-primary w-full">
-          <i className="fas fa-plus mr-2" />
+        <button type="submit" className="btn-primary w-full bg-red-600 hover:bg-red-700">
+          <i className="fas fa-minus mr-2" />
           Add Expense
         </button>
       </form>

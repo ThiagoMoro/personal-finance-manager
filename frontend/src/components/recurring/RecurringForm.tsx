@@ -4,7 +4,47 @@ interface RecurringFormProps {
   onSubmit: (e: React.FormEvent) => void;
 }
 
+const INCOME_CATEGORIES = [
+  { value: 'salary', label: '💼 Salary' },
+  { value: 'bonus', label: '🎉 Bonus' },
+  { value: 'freelance', label: '💻 Freelance' },
+  { value: 'commission', label: '💰 Commission' },
+  { value: 'investments', label: '📈 Investments' },
+  { value: 'interest', label: '🏦 Interest' },
+  { value: 'rental', label: '🏠 Rental Income' },
+  { value: 'side-hustle', label: '🚀 Side Hustle' },
+  { value: 'other', label: '📦 Other Income' },
+];
+
+const EXPENSE_CATEGORIES = [
+  { value: 'home', label: '🏠 Home' },
+  { value: 'utilities', label: '💡 Utilities' },
+  { value: 'phone', label: '📱 Phone' },
+  { value: 'insurance', label: '🛡️ Insurance' },
+  { value: 'food', label: '🍔 Food & Groceries' },
+  { value: 'restaurants', label: '🍽️ Restaurants' },
+  { value: 'transport', label: '🚗 Transport' },
+  { value: 'fuel', label: '⛽ Fuel' },
+  { value: 'car', label: '🔧 Car Maintenance' },
+  { value: 'healthcare', label: '🏥 Healthcare' },
+  { value: 'gym', label: '💪 Gym & Sports' },
+  { value: 'beauty', label: '💅 Beauty & Personal Care' },
+  { value: 'education', label: '🎓 Education' },
+  { value: 'entertainment', label: '🎬 Entertainment' },
+  { value: 'subscriptions', label: '📺 Subscriptions' },
+  { value: 'travel', label: '✈️ Travel & Holidays' },
+  { value: 'shopping', label: '👕 Shopping' },
+  { value: 'children', label: '👶 Children' },
+  { value: 'pets', label: '🐾 Pets' },
+  { value: 'taxes', label: '🧾 Taxes' },
+  { value: 'fees', label: '🏦 Bank Fees' },
+  { value: 'other', label: '📦 Other' },
+];
+
 export default function RecurringForm({ newRecurring, setNewRecurring, onSubmit }: RecurringFormProps) {
+  // Escolhe as categorias baseado no tipo selecionado
+  const categories = newRecurring.type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+
   return (
     <div className="card p-6 card-animate animate-fade-in">
       <div className="card-header">
@@ -59,24 +99,33 @@ export default function RecurringForm({ newRecurring, setNewRecurring, onSubmit 
           <label className="label">Type</label>
           <select
             value={newRecurring.type}
-            onChange={(e) => setNewRecurring({ ...newRecurring, type: e.target.value })}
+            onChange={(e) => setNewRecurring({ ...newRecurring, type: e.target.value, category: '' })}
             className="select"
             required
           >
             <option value="">Select type</option>
-            <option value="income">Income</option>
-            <option value="expense">Expense</option>
+            <option value="income">💰 Income</option>
+            <option value="expense">💸 Expense</option>
           </select>
         </div>
         <div>
           <label className="label">Category</label>
-          <input
-            type="text"
+          <select
             value={newRecurring.category}
             onChange={(e) => setNewRecurring({ ...newRecurring, category: e.target.value })}
-            className="input"
-            placeholder="e.g. Salary, Rent, Subscription"
-          />
+            className="select"
+            required
+            disabled={!newRecurring.type}
+          >
+            <option value="">
+              {newRecurring.type ? 'Select a category' : 'Select type first'}
+            </option>
+            {categories.map((cat) => (
+              <option key={cat.value} value={cat.value}>
+                {cat.label}
+              </option>
+            ))}
+          </select>
         </div>
         <button type="submit" className="btn-primary w-full">
           <i className="fas fa-plus mr-2" />

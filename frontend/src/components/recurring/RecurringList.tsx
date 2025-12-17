@@ -5,12 +5,59 @@ interface RecurringListProps {
   onRemove: (id: number) => void;
 }
 
+const INCOME_CATEGORY_LABELS: Record<string, string> = {
+  'salary': '💼 Salary',
+  'bonus': '🎉 Bonus',
+  'freelance': '💻 Freelance',
+  'commission': '💰 Commission',
+  'investments': '📈 Investments',
+  'interest': '🏦 Interest',
+  'rental': '🏠 Rental Income',
+  'side-hustle': '🚀 Side Hustle',
+  'other': '📦 Other Income',
+};
+
+const EXPENSE_CATEGORY_LABELS: Record<string, string> = {
+  'home': '🏠 Home',
+  'utilities': '💡 Utilities',
+  'phone': '📱 Phone',
+  'insurance': '🛡️ Insurance',
+  'food': '🍔 Food & Groceries',
+  'restaurants': '🍽️ Restaurants',
+  'transport': '🚗 Transport',
+  'fuel': '⛽ Fuel',
+  'car': '🔧 Car Maintenance',
+  'healthcare': '🏥 Healthcare',
+  'gym': '💪 Gym & Sports',
+  'beauty': '💅 Beauty & Personal Care',
+  'education': '🎓 Education',
+  'entertainment': '🎬 Entertainment',
+  'subscriptions': '📺 Subscriptions',
+  'travel': '✈️ Travel & Holidays',
+  'shopping': '👕 Shopping',
+  'children': '👶 Children',
+  'pets': '🐾 Pets',
+  'taxes': '🧾 Taxes',
+  'fees': '🏦 Bank Fees',
+  'other': '📦 Other',
+};
+
 export default function RecurringList({ recurring, onRemove }: RecurringListProps) {
   const sortedRecurring = [...recurring].sort((a, b) => a.dayOfMonth - b.dayOfMonth);
 
   const totalIncome = recurring.filter(r => r.type === 'income').reduce((acc, r) => acc + r.amount, 0);
   const totalExpense = recurring.filter(r => r.type === 'expense').reduce((acc, r) => acc + r.amount, 0);
   const monthlyBalance = totalIncome - totalExpense;
+
+  const getCategoryLabel = (category?: string, type?: string) => {
+    if (!category) return '📦 Other';
+    
+    if (type === 'income') {
+      return INCOME_CATEGORY_LABELS[category] || category;
+    } else {
+      return EXPENSE_CATEGORY_LABELS[category] || category;
+    }
+  };
 
   return (
     <div className="card p-6 card-animate animate-fade-in">
@@ -62,13 +109,11 @@ export default function RecurringList({ recurring, onRemove }: RecurringListProp
                       <i className="fas fa-calendar mr-1" />
                       Day {r.dayOfMonth}
                     </span>
-                    {r.category && (
-                      <span className={`text-xs px-2 py-0.5 rounded ${r.type === 'income' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                        {r.category}
-                      </span>
-                    )}
                     <span className={`text-xs px-2 py-0.5 rounded ${r.type === 'income' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                      {r.type}
+                      {getCategoryLabel(r.category, r.type)}
+                    </span>
+                    <span className={`text-xs px-2 py-0.5 rounded ${r.type === 'income' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                      {r.type === 'income' ? '💰 Income' : '💸 Expense'}
                     </span>
                   </div>
                 </div>

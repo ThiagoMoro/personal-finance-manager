@@ -5,8 +5,51 @@ interface ExpenseListProps {
   onRemove: (id: number) => void;
 }
 
+const EXPENSE_CATEGORY_LABELS: Record<string, string> = {
+  'home': '🏠 Home',
+  'utilities': '💡 Utilities',
+  'phone': '📱 Phone',
+  'insurance': '🛡️ Insurance',
+  'food': '🍔 Food & Groceries',
+  'restaurants': '🍽️ Restaurants',
+  'delivery': '🛵 Delivery',
+  'snacks': '🍿 Snacks & Drinks',
+  'transport': '🚗 Transport',
+  'fuel': '⛽ Fuel',
+  'car': '🔧 Car Maintenance',
+  'parking': '🅿️ Parking & Tolls',
+  'taxi': '🚕 Taxi & Uber',
+  'healthcare': '🏥 Healthcare',
+  'gym': '💪 Gym & Sports',
+  'beauty': '💅 Beauty & Personal Care',
+  'education': '🎓 Education',
+  'books': '📚 Books & Magazines',
+  'courses': '💻 Online Courses',
+  'entertainment': '🎬 Entertainment',
+  'subscriptions': '📺 Subscriptions',
+  'hobbies': '🎨 Hobbies',
+  'games': '🎮 Games',
+  'travel': '✈️ Travel & Holidays',
+  'shopping': '👕 Shopping',
+  'electronics': '📱 Electronics',
+  'gifts': '🎁 Gifts',
+  'children': '👶 Children',
+  'pets': '🐾 Pets',
+  'work': '💼 Work Expenses',
+  'office': '📎 Office Supplies',
+  'taxes': '🧾 Taxes',
+  'fees': '🏦 Bank Fees',
+  'donations': '❤️ Donations',
+  'other': '📦 Other',
+};
+
 export default function ExpenseList({ expenses, onRemove }: ExpenseListProps) {
   const totalExpense = expenses.reduce((acc, e) => acc + e.amount, 0);
+
+  const getCategoryLabel = (category?: string) => {
+    if (!category) return '📦 Other';
+    return EXPENSE_CATEGORY_LABELS[category] || category;
+  };
 
   return (
     <div className="card p-6 card-animate animate-fade-in">
@@ -21,7 +64,7 @@ export default function ExpenseList({ expenses, onRemove }: ExpenseListProps) {
       </div>
 
       {totalExpense > 0 && (
-        <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-lg p-4 mb-4 border border-red-100">
+        <div className="bg-gradient-to-r from-red-50 to-rose-50 rounded-lg p-4 mb-4 border border-red-100">
           <p className="text-xs text-slate-600 mb-1">Total Expenses</p>
           <p className="text-2xl font-bold text-red-600">-€{totalExpense.toFixed(2)}</p>
         </div>
@@ -30,7 +73,7 @@ export default function ExpenseList({ expenses, onRemove }: ExpenseListProps) {
       <div className="space-y-0 border border-slate-100 rounded-lg overflow-hidden max-h-96 overflow-y-auto">
         {expenses.length === 0 ? (
           <div className="text-center py-12">
-            <i className="fas fa-arrow-trend-down text-4xl text-slate-300 mb-3" />
+            <i className="fas fa-receipt text-4xl text-slate-300 mb-3" />
             <p className="text-slate-400">No expenses recorded yet</p>
             <p className="text-xs text-slate-400 mt-1">Add your first expense to track spending</p>
           </div>
@@ -48,11 +91,9 @@ export default function ExpenseList({ expenses, onRemove }: ExpenseListProps) {
                       <i className="fas fa-calendar mr-1" />
                       {new Date(expense.date).toLocaleDateString('en-GB')}
                     </span>
-                    {expense.category && (
-                      <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded">
-                        {expense.category}
-                      </span>
-                    )}
+                    <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded">
+                      {getCategoryLabel(expense.category)}
+                    </span>
                     <span className="text-xs text-slate-500">
                       <i className="fas fa-building-columns mr-1" />
                       {expense.bank}

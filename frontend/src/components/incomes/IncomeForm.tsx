@@ -7,6 +7,20 @@ interface IncomeFormProps {
   onSubmit: (e: React.FormEvent) => void;
 }
 
+const INCOME_CATEGORIES = [
+  { value: 'salary', label: '💼 Salary' },
+  { value: 'bonus', label: '🎉 Bonus' },
+  { value: 'freelance', label: '💻 Freelance' },
+  { value: 'commission', label: '💰 Commission' },
+  { value: 'investments', label: '📈 Investments' },
+  { value: 'interest', label: '🏦 Interest' },
+  { value: 'rental', label: '🏠 Rental Income' },
+  { value: 'gifts', label: '🎁 Gifts' },
+  { value: 'refunds', label: '↩️ Refunds' },
+  { value: 'side-hustle', label: '🚀 Side Hustle' },
+  { value: 'other', label: '📦 Other Income' },
+];
+
 export default function IncomeForm({ newIncome, setNewIncome, banks, onSubmit }: IncomeFormProps) {
   return (
     <div className="card p-6 card-animate animate-fade-in">
@@ -24,7 +38,7 @@ export default function IncomeForm({ newIncome, setNewIncome, banks, onSubmit }:
             value={newIncome.description}
             onChange={(e) => setNewIncome({ ...newIncome, description: e.target.value })}
             className="input"
-            placeholder="e.g. Salary, Freelance work"
+            placeholder="e.g. Monthly salary, Freelance project"
             required
           />
         </div>
@@ -57,13 +71,19 @@ export default function IncomeForm({ newIncome, setNewIncome, banks, onSubmit }:
         </div>
         <div>
           <label className="label">Category</label>
-          <input
-            type="text"
+          <select
             value={newIncome.category}
             onChange={(e) => setNewIncome({ ...newIncome, category: e.target.value })}
-            className="input"
-            placeholder="e.g. Salary, Investment, Gift"
-          />
+            className="select"
+            required
+          >
+            <option value="">Select a category</option>
+            {INCOME_CATEGORIES.map((cat) => (
+              <option key={cat.value} value={cat.value}>
+                {cat.label}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label className="label">Bank</label>
