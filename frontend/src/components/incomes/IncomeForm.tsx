@@ -1,27 +1,29 @@
 import type { Bank } from '../../types';
 
 interface IncomeFormProps {
-  newIncome: { description: string; amount: string; date: string; category: string; bank: string };
-  setNewIncome: (income: { description: string; amount: string; date: string; category: string; bank: string }) => void;
   banks: Bank[];
+  newIncome: { description: string; amount: string; date: string; bank: string; category: string };
+  setNewIncome: (income: { description: string; amount: string; date: string; bank: string; category: string }) => void;
   onSubmit: (e: React.FormEvent) => void;
 }
 
 const INCOME_CATEGORIES = [
-  { value: 'salary', label: '💼 Salary' },
-  { value: 'bonus', label: '🎉 Bonus' },
-  { value: 'freelance', label: '💻 Freelance' },
-  { value: 'commission', label: '💰 Commission' },
-  { value: 'investments', label: '📈 Investments' },
-  { value: 'interest', label: '🏦 Interest' },
-  { value: 'rental', label: '🏠 Rental Income' },
-  { value: 'gifts', label: '🎁 Gifts' },
-  { value: 'refunds', label: '↩️ Refunds' },
-  { value: 'side-hustle', label: '🚀 Side Hustle' },
-  { value: 'other', label: '📦 Other Income' },
+  { value: 'Salary', label: '💼 Salary' },
+  { value: 'Bonus', label: '🎉 Bonus' },
+  { value: 'Freelance', label: '💻 Freelance' },
+  { value: 'Commission', label: '💰 Commission' },
+  { value: 'Investments', label: '📈 Investments' },
+  { value: 'Dividends', label: '💵 Dividends' },
+  { value: 'Interest', label: '🏦 Interest' },
+  { value: 'Rental', label: '🏠 Rental Income' },
+  { value: 'Side-Hustle', label: '🚀 Side Hustle' },
+  { value: 'Refunds', label: '↩️ Refunds' },
+  { value: 'Gifts', label: '🎁 Gifts Received' },
+  { value: 'Cashback', label: '💳 Cashback' },
+  { value: 'Other', label: '📦 Other Income' },
 ];
 
-export default function IncomeForm({ newIncome, setNewIncome, banks, onSubmit }: IncomeFormProps) {
+export default function IncomeForm({ banks, newIncome, setNewIncome, onSubmit }: IncomeFormProps) {
   return (
     <div className="card p-6 card-animate animate-fade-in">
       <div className="card-header">
@@ -38,7 +40,7 @@ export default function IncomeForm({ newIncome, setNewIncome, banks, onSubmit }:
             value={newIncome.description}
             onChange={(e) => setNewIncome({ ...newIncome, description: e.target.value })}
             className="input"
-            placeholder="e.g. Monthly salary, Freelance project"
+            placeholder="e.g. Monthly Salary, Freelance Project"
             required
           />
         </div>
@@ -70,6 +72,22 @@ export default function IncomeForm({ newIncome, setNewIncome, banks, onSubmit }:
           </div>
         </div>
         <div>
+          <label className="label">Bank Account</label>
+          <select
+            value={newIncome.bank}
+            onChange={(e) => setNewIncome({ ...newIncome, bank: e.target.value })}
+            className="select"
+            required
+          >
+            <option value="">Select bank</option>
+            {banks.map((bank) => (
+              <option key={bank.id} value={bank.name}>
+                {bank.name} - €{bank.balance.toFixed(2)}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
           <label className="label">Category</label>
           <select
             value={newIncome.category}
@@ -81,22 +99,6 @@ export default function IncomeForm({ newIncome, setNewIncome, banks, onSubmit }:
             {INCOME_CATEGORIES.map((cat) => (
               <option key={cat.value} value={cat.value}>
                 {cat.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="label">Bank</label>
-          <select
-            value={newIncome.bank}
-            onChange={(e) => setNewIncome({ ...newIncome, bank: e.target.value })}
-            className="select"
-            required
-          >
-            <option value="">Select a bank</option>
-            {banks.map((bank) => (
-              <option key={bank.id} value={bank.name}>
-                {bank.name}
               </option>
             ))}
           </select>

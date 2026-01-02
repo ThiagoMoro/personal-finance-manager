@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import type { Bank, Income, Expense, RecurringPayment } from './types';
-import { banksAPI, incomesAPI, expensesAPI, recurringAPI } from './services/api';
+import type { Bank, Income, Expense, RecurringPayment, Transfer } from './types';
+import { banksAPI, incomesAPI, expensesAPI, recurringAPI, transfersAPI } from './services/api';
 import Header from './components/layout/Header';
 import Navigation from './components/layout/Navigation';
 import Dashboard from './components/dashboard/Dashboard';
@@ -12,12 +12,15 @@ import ExpenseForm from './components/expenses/ExpenseForm';
 import ExpenseList from './components/expenses/ExpenseList';
 import RecurringForm from './components/recurring/RecurringForm';
 import RecurringList from './components/recurring/RecurringList';
+import TransferForm from './components/transfers/TransferForm';
+import TransferList from './components/transfers/TransferList';
 
 function App() {
   const [banks, setBanks] = useState<Bank[]>([]);
   const [incomes, setIncomes] = useState<Income[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [recurring, setRecurring] = useState<RecurringPayment[]>([]);
+  const [transfers, setTransfers] = useState<Transfer[]>([]); // NOVO
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -32,6 +35,14 @@ function App() {
     dayOfMonth: '', 
     category: '' 
   });
+  // NOVO: Estado para transfers
+  const [newTransfer, setNewTransfer] = useState({
+    description: '',
+    amount: '',
+    date: new Date().toISOString().split('T')[0],
+    fromBank: '',
+    toBank: ''
+  });
 
   // Carregar dados iniciais
   useEffect(() => {
@@ -43,18 +54,19 @@ function App() {
       setLoading(true);
       setError(null);
       
-      const [banksRes, incomesRes, expensesRes, recurringRes] = await Promise.all([
+      const [banksRes, incomesRes, expensesRes, recurringRes, transfersRes] = await Promise.all([
         banksAPI.getAll(),
         incomesAPI.getAll(),
         expensesAPI.getAll(),
         recurringAPI.getAll(),
+        transfersAPI.getAll(), // NOVO
       ]);
 
-      // ✅ CORREÇÃO: usar .data.data porque o backend devolve { data: [...] }
       setBanks(Array.isArray(banksRes.data.data) ? banksRes.data.data : []);
       setIncomes(Array.isArray(incomesRes.data.data) ? incomesRes.data.data : []);
       setExpenses(Array.isArray(expensesRes.data.data) ? expensesRes.data.data : []);
       setRecurring(Array.isArray(recurringRes.data.data) ? recurringRes.data.data : []);
+      setTransfers(Array.isArray(transfersRes.data.data) ? transfersRes.data.data : []); // NOVO
     } catch (err) {
       setError('Failed to load data. Please check if the server is running.');
       console.error('Error loading data:', err);
@@ -72,7 +84,6 @@ function App() {
           name: newBank.name,
           balance: parseFloat(newBank.balance),
         });
-        // ✅ CORREÇÃO: response.data já é o objeto criado
         const createdBank = response.data.data || response.data;
         setBanks([...banks, createdBank]);
         setNewBank({ name: '', balance: '' });
@@ -214,6 +225,87 @@ function App() {
     }
   };
 
+  // ============================================
+  // TRANSFERS (NOVO)
+  // ============================================
+  const addTransfer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newTransfer.description && newTransfer.amount && newTransfer.fromBank && newTransfer.toBank) {
+      const amount = parseFloat(newTransfer.amount);
+      const fromBank = banks.find(b => b.name === newTransfer.fromBank);
+      
+      // Validar fundos suficientes
+      if (fromBank && fromBank.balance < amount) {
+        alert('Insufficient funds in source bank!');
+        return;
+      }
+
+      // Validar que não é o mesmo banco
+      if (newTransfer.fromBank === newTransfer.toBank) {
+        alert('Cannot transfer to the same bank!');
+        return;
+      }
+
+      try {
+        const response = await transfersAPI.create({
+          description: newTransfer.description,
+          amount: amount,
+          date: newTransfer.date,
+          fromBank: newTransfer.fromBank,
+          toBank: newTransfer.toBank,
+        });
+
+        if (response.status === 201 || response.status === 200) {
+          const createdTransfer = response.data.data || response.data;
+          setTransfers([...transfers, createdTransfer]);
+          
+          // Atualizar saldos dos bancos localmente
+          setBanks(banks.map(b => {
+            if (b.name === newTransfer.fromBank) {
+              return { ...b, balance: b.balance - amount };
+            }
+            if (b.name === newTransfer.toBank) {
+              return { ...b, balance: b.balance + amount };
+            }
+            return b;
+          }));
+          
+          setNewTransfer({
+            description: '',
+            amount: '',
+            date: new Date().toISOString().split('T')[0],
+            fromBank: '',
+            toBank: ''
+          });
+        } else {
+          alert('Error creating transfer');
+        }
+      } catch (err) {
+        console.error('Error creating transfer:', err);
+        if (err && typeof err === 'object' && 'response' in err) {
+          const axiosError = err as { response?: { data?: { error?: string } } };
+          alert(axiosError.response?.data?.error || 'Failed to create transfer');
+        } else {
+          alert('Failed to create transfer');
+        }
+      }
+    }
+  };
+
+  const removeTransfer = async (id: number) => {
+    try {
+      await transfersAPI.delete(id);
+      setTransfers(transfers.filter(t => t.id !== id));
+      
+      // Recarregar bancos para atualizar saldos
+      const banksRes = await banksAPI.getAll();
+      setBanks(Array.isArray(banksRes.data.data) ? banksRes.data.data : []);
+    } catch (err) {
+      console.error('Error deleting transfer:', err);
+      alert('Failed to delete transfer');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
@@ -285,6 +377,22 @@ function App() {
               onSubmit={addRecurring} 
             />
             <RecurringList recurring={recurring} onRemove={removeRecurring} />
+          </div>
+        )}
+
+        {/* NOVO: Tab de Transfers */}
+        {activeTab === 'transfers' && (
+          <div className="page-grid">
+            <TransferForm 
+              banks={banks}
+              newTransfer={newTransfer}
+              setNewTransfer={setNewTransfer}
+              onSubmit={addTransfer}
+            />
+            <TransferList 
+              transfers={transfers}
+              onDelete={removeTransfer}
+            />
           </div>
         )}
       </div>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3001',
+  baseURL: 'http://localhost:3001/api',
 });
 
 export const banksAPI = {
@@ -29,4 +29,14 @@ export const recurringAPI = {
   create: (data: { description: string; amount: number; type: string; dayOfMonth: number; category: string }) => 
     api.post('/recurring', data),
   delete: (id: number) => api.delete(`/recurring/${id}`),
+};
+
+// ============================================
+// TRANSFERS (NOVO)
+// ============================================
+export const transfersAPI = {
+  getAll: () => api.get('/transfers'),
+  create: (data: { description: string; amount: number; date: string; fromBank: string; toBank: string }) => 
+    api.post('/transfers', data),
+  delete: (id: number) => api.delete(`/transfers/${id}`),
 };

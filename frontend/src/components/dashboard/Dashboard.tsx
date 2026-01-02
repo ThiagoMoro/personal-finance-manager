@@ -1,6 +1,7 @@
 import type { Bank, Income, Expense } from '../../types';
 import StatCard from '../layout/StatCard';
-import PieChartComponent from './PieChartComponent';
+//import PieChartComponent from './PieChartComponent';
+import CategoryListComponent from './CategoryListComponent';
 
 interface DashboardProps {
   banks: Bank[];
@@ -36,8 +37,11 @@ export default function Dashboard({ banks, incomes, expenses }: DashboardProps) 
     value: expensesByCategory[category]
   }));
 
+{/*
+  Cores para o grafico de pizza 
   const INCOME_COLORS = ['#10b981', '#22c55e', '#4ade80', '#0ea5e9', '#38bdf8'];
   const EXPENSE_COLORS = ['#ef4444', '#f97316', '#fb923c', '#b91c1c', '#facc15'];
+*/}
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -68,8 +72,8 @@ export default function Dashboard({ banks, incomes, expenses }: DashboardProps) 
           icon={netBalance >= 0 ? 'fa-circle-check' : 'fa-circle-exclamation'}
         />
       </div>
-
-      {/* Pie Charts */}
+{/*
+      Pie Charts
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="card p-6 card-animate">
           <h3 className="card-title mb-4 flex items-center gap-2">
@@ -101,7 +105,23 @@ export default function Dashboard({ banks, incomes, expenses }: DashboardProps) 
           )}
         </div>
       </div>
+*/}
 
+      {/*CategoryListComponent*/}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <CategoryListComponent 
+          data={incomePieData} 
+          title="Incomes by Category" 
+          color="#10b981"
+          icon="fa-arrow-trend-up"
+        />
+        <CategoryListComponent 
+          data={expensePieData} 
+          title="Expenses by Category" 
+          color="#ef4444"
+          icon="fa-arrow-trend-down"
+        />
+      </div>
       {/* Latest Transactions */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="card p-6 card-animate">

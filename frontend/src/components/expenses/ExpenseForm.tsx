@@ -1,56 +1,56 @@
 import type { Bank } from '../../types';
 
 interface ExpenseFormProps {
-  newExpense: { description: string; amount: string; date: string; category: string; bank: string };
-  setNewExpense: (expense: { description: string; amount: string; date: string; category: string; bank: string }) => void;
   banks: Bank[];
+  newExpense: { description: string; amount: string; date: string; bank: string; category: string };
+  setNewExpense: (expense: { description: string; amount: string; date: string; bank: string; category: string }) => void;
   onSubmit: (e: React.FormEvent) => void;
 }
 
 const EXPENSE_CATEGORIES = [
-  { value: 'home', label: '🏠 Home' },
-  { value: 'utilities', label: '💡 Utilities' },
-  { value: 'phone', label: '📱 Phone' },
-  { value: 'insurance', label: '🛡️ Insurance' },
-  { value: 'food', label: '🍔 Food & Groceries' },
-  { value: 'restaurants', label: '🍽️ Restaurants' },
-  { value: 'delivery', label: '🛵 Delivery' },
-  { value: 'snacks', label: '🍿 Snacks & Drinks' },
-  { value: 'transport', label: '🚗 Transport' },
-  { value: 'fuel', label: '⛽ Fuel' },
-  { value: 'car', label: '🔧 Car Maintenance' },
-  { value: 'parking', label: '🅿️ Parking & Tolls' },
-  { value: 'taxi', label: '🚕 Taxi & Uber' },
-  { value: 'healthcare', label: '🏥 Healthcare' },
-  { value: 'gym', label: '💪 Gym & Sports' },
-  { value: 'beauty', label: '💅 Beauty & Personal Care' },
-  { value: 'education', label: '🎓 Education' },
-  { value: 'books', label: '📚 Books & Magazines' },
-  { value: 'courses', label: '💻 Online Courses' },
-  { value: 'entertainment', label: '🎬 Entertainment' },
-  { value: 'subscriptions', label: '📺 Subscriptions' },
-  { value: 'hobbies', label: '🎨 Hobbies' },
-  { value: 'games', label: '🎮 Games' },
-  { value: 'travel', label: '✈️ Travel & Holidays' },
-  { value: 'shopping', label: '👕 Shopping' },
-  { value: 'electronics', label: '📱 Electronics' },
-  { value: 'gifts', label: '🎁 Gifts' },
-  { value: 'children', label: '👶 Children' },
-  { value: 'pets', label: '🐾 Pets' },
-  { value: 'work', label: '💼 Work Expenses' },
-  { value: 'office', label: '📎 Office Supplies' },
-  { value: 'taxes', label: '🧾 Taxes' },
-  { value: 'fees', label: '🏦 Bank Fees' },
-  { value: 'donations', label: '❤️ Donations' },
-  { value: 'other', label: '📦 Other' },
+  { value: 'Home', label: '🏠 Home' },
+  { value: 'Utilities', label: '💡 Utilities' },
+  { value: 'Phone', label: '📱 Phone' },
+  { value: 'Insurance', label: '🛡️ Insurance' },
+  { value: 'Food', label: '🍔 Food & Groceries' },
+  { value: 'Restaurants', label: '🍽️ Restaurants' },
+  { value: 'Delivery', label: '🛵 Delivery' },
+  { value: 'Snacks', label: '🍿 Snacks & Drinks' },
+  { value: 'Transport', label: '🚗 Transport' },
+  { value: 'Fuel', label: '⛽ Fuel' },
+  { value: 'Car', label: '🔧 Car Maintenance' },
+  { value: 'Parking', label: '🅿️ Parking & Tolls' },
+  { value: 'Taxi', label: '🚕 Taxi & Uber' },
+  { value: 'Healthcare', label: '🏥 Healthcare' },
+  { value: 'Gym', label: '💪 Gym & Sports' },
+  { value: 'Beauty', label: '💅 Beauty & Personal Care' },
+  { value: 'Education', label: '🎓 Education' },
+  { value: 'Books', label: '📚 Books & Magazines' },
+  { value: 'Courses', label: '💻 Online Courses' },
+  { value: 'Entertainment', label: '🎬 Entertainment' },
+  { value: 'Subscriptions', label: '📺 Subscriptions' },
+  { value: 'Hobbies', label: '🎨 Hobbies' },
+  { value: 'Games', label: '🎮 Games' },
+  { value: 'Travel', label: '✈️ Travel & Holidays' },
+  { value: 'Shopping', label: '👕 Shopping' },
+  { value: 'Electronics', label: '📱 Electronics' },
+  { value: 'Gifts', label: '🎁 Gifts' },
+  { value: 'Children', label: '👶 Children' },
+  { value: 'Pets', label: '🐾 Pets' },
+  { value: 'Work', label: '💼 Work Expenses' },
+  { value: 'Office', label: '📎 Office Supplies' },
+  { value: 'Taxes', label: '🧾 Taxes' },
+  { value: 'Fees', label: '🏦 Bank Fees' },
+  { value: 'Donations', label: '❤️ Donations' },
+  { value: 'Other', label: '📦 Other' },
 ];
 
-export default function ExpenseForm({ newExpense, setNewExpense, banks, onSubmit }: ExpenseFormProps) {
+export default function ExpenseForm({ banks, newExpense, setNewExpense, onSubmit }: ExpenseFormProps) {
   return (
     <div className="card p-6 card-animate animate-fade-in">
       <div className="card-header">
         <h2 className="card-title flex items-center gap-2">
-          <i className="fas fa-arrow-trend-down text-red-600" />
+          <i className="fas fa-receipt text-red-600" />
           Add Expense
         </h2>
       </div>
@@ -62,7 +62,7 @@ export default function ExpenseForm({ newExpense, setNewExpense, banks, onSubmit
             value={newExpense.description}
             onChange={(e) => setNewExpense({ ...newExpense, description: e.target.value })}
             className="input"
-            placeholder="e.g. Supermarket, Restaurant, Fuel"
+            placeholder="e.g. Supermarket, Petrol, Netflix"
             required
           />
         </div>
@@ -94,6 +94,22 @@ export default function ExpenseForm({ newExpense, setNewExpense, banks, onSubmit
           </div>
         </div>
         <div>
+          <label className="label">Bank Account</label>
+          <select
+            value={newExpense.bank}
+            onChange={(e) => setNewExpense({ ...newExpense, bank: e.target.value })}
+            className="select"
+            required
+          >
+            <option value="">Select bank</option>
+            {banks.map((bank) => (
+              <option key={bank.id} value={bank.name}>
+                {bank.name} - €{bank.balance.toFixed(2)}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
           <label className="label">Category</label>
           <select
             value={newExpense.category}
@@ -109,24 +125,8 @@ export default function ExpenseForm({ newExpense, setNewExpense, banks, onSubmit
             ))}
           </select>
         </div>
-        <div>
-          <label className="label">Bank</label>
-          <select
-            value={newExpense.bank}
-            onChange={(e) => setNewExpense({ ...newExpense, bank: e.target.value })}
-            className="select"
-            required
-          >
-            <option value="">Select a bank</option>
-            {banks.map((bank) => (
-              <option key={bank.id} value={bank.name}>
-                {bank.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button type="submit" className="btn-primary w-full bg-red-600 hover:bg-red-700">
-          <i className="fas fa-minus mr-2" />
+        <button type="submit" className="btn-primary w-full">
+          <i className="fas fa-plus mr-2" />
           Add Expense
         </button>
       </form>

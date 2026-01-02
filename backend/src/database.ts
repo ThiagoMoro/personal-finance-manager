@@ -58,6 +58,17 @@ function initDatabase() {
         category TEXT
       )
     `);
+    // Transfers table (NOVO)
+    db.run(`
+      CREATE TABLE IF NOT EXISTS transfers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        description TEXT NOT NULL,
+        amount REAL NOT NULL,
+        date TEXT NOT NULL,
+        fromBank TEXT NOT NULL,
+        toBank TEXT NOT NULL
+      )
+    `);
 
     console.log('✅ Database tables initialized');
   });

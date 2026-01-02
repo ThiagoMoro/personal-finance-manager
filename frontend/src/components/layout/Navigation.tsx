@@ -7,6 +7,7 @@ export default function Navigation({ activeTab, setActiveTab }: NavigationProps)
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', icon: 'fa-chart-line', color: 'blue' },
     { id: 'banks', label: 'Banks', icon: 'fa-building-columns', color: 'indigo' },
+    { id: 'transfers', label: 'Transfers', icon: 'fa-right-left' },
     { id: 'incomes', label: 'Incomes', icon: 'fa-arrow-trend-up', color: 'green' },
     { id: 'expenses', label: 'Expenses', icon: 'fa-arrow-trend-down', color: 'red' },
     { id: 'recurring', label: 'Recurring', icon: 'fa-calendar-days', color: 'purple' },

@@ -36,3 +36,12 @@ export interface RecurringPayment {
   dayOfMonth: number;
   category: string;
 }
+
+export interface Transfer {
+  id: number;
+  description: string;
+  amount: number;
+  date: string;
+  fromBank: string;
+  toBank: string;
+}
